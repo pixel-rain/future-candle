@@ -2,10 +2,9 @@
   import type CandlestickData from "../interfaces/CandlestickData";
   
   export let item: CandlestickData;
-  export let datasetMax: number;
-  export let datasetMin: number;
+  export let isPredicted: boolean = false;
   
-  const { open, high, low, close } = item;
+  const { open, high, low, close, datasetMax, datasetMin } = item;
   const chartSize = 10;
 
   $: percent = (datasetMax - datasetMin) / 100;
@@ -17,16 +16,20 @@
 
 <div class="candle">
   <div
-    class="tail" 
+    class="tail"
+    class:predicted={isPredicted}
     style={`height: ${headTailSize}rem; margin-top: ${upperOffset}rem;`}></div>
 
   <div 
     class="body"
-    class:down-candle={close < open}
+    class:body-down={(close < open) && !isPredicted}
+    class:predicted={(close < open) && isPredicted}
+    class:body-predicted={isPredicted}
     style={`height: ${bodySize}rem;`}></div>
 
   <div 
-    class="tail" 
+    class="tail"
+    class:predicted={isPredicted}
     style={`height: ${bottomTailSize}rem;`}></div>
 </div>
 
@@ -35,6 +38,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-left: 0.3rem;
+    margin-right: 0.3rem;
   }
 
   .tail {
@@ -43,11 +48,19 @@
   }
 
   .body {
-    width: 3rem;
+    width: 1.5rem;
     border: 2px solid black;
   }
 
-  .down-candle {
+  .body-predicted {
+    border: 2px solid silver;
+  }
+
+  .body-down {
     background-color: black;
+  }
+
+  .predicted {
+    background-color: silver;
   }
 </style>

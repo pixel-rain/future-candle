@@ -3,4 +3,6 @@ export default interface CandlestickData {
   high: number;
   low: number;
   close: number;
+  datasetMax: number;
+  datasetMin: number;
 }
