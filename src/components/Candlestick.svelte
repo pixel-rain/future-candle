@@ -4,9 +4,14 @@
   export let item: CandlestickData;
   export let isPredicted: boolean = false;
   
-  const { open, high, low, close, datasetMax, datasetMin } = item;
   const chartSize = 10;
 
+  $: open = item.open;
+  $: high = item.high;
+  $: low = item.low;
+  $: close = item.close;
+  $: datasetMax = item.datasetMax;
+  $: datasetMin = item.datasetMin;
   $: percent = (datasetMax - datasetMin) / 100;
   $: headTailSize = ((high - (close > open ? close : open)) / percent) / chartSize;
   $: bodySize = (Math.abs(open - close) / percent) / chartSize;
