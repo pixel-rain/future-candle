@@ -1,9 +1,11 @@
 <script lang="ts">
+  import { createEventDispatcher } from 'svelte';
   import type CandlestickData from "../interfaces/CandlestickData";
   
   export let item: CandlestickData;
   export let isPredicted: boolean = false;
   
+  const dispatch = createEventDispatcher();
   const chartSize = 10;
 
   $: open = item.open;
@@ -12,6 +14,8 @@
   $: close = item.close;
   $: datasetMax = item.datasetMax;
   $: datasetMin = item.datasetMin;
+  $: date = item.date;
+
   $: percent = (datasetMax - datasetMin) / 100;
   $: headTailSize = ((high - (close > open ? close : open)) / percent) / chartSize;
   $: bodySize = (Math.abs(open - close) / percent) / chartSize;
@@ -19,7 +23,12 @@
   $: upperOffset = ((datasetMax - high) / percent) / chartSize;
 </script>
 
-<div class="candle">
+<div
+  on:mouseover={() => dispatch('candle-data', { open, high, low, close, date })}
+  on:mouseenter
+  on:mouseleave
+  class="candle"
+>
   <div
     class="tail"
     class:predicted={isPredicted}
@@ -43,8 +52,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-left: 0.3rem;
-    margin-right: 0.3rem;
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
   }
 
   .tail {

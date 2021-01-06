@@ -5,4 +5,5 @@ export default interface CandlestickData {
   close: number;
   datasetMax: number;
   datasetMin: number;
+  date: string;
 }
