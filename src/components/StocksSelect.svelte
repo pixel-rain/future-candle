@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { candlesticksData } from "../store";
+  import { isSpinner } from "../store";
   import getDataset from "../utility/datasetGetter";
 
   const tickers = [
@@ -30,8 +31,10 @@
   let selected;
 
   async function setData(ticker) {
+    isSpinner.set(true);
     const data = await getDataset(ticker);
     candlesticksData.set(data);
+    isSpinner.set(false);
   }
 
   onMount(() => setData(tickers[0].ticker));

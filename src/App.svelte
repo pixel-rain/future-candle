@@ -1,8 +1,10 @@
 <script lang="ts">
   import Candlestick from "./components/Candlestick.svelte";
   import StocksSelect from "./components/StocksSelect.svelte";
+  import Spinner from "./components/Spinner.svelte";
   import type hoveredCandle from "./interfaces/HoveredCandle";
   import { candlesticksData } from "./store";
+  import { isSpinner } from "./store";
 
   let isCrosshairShown = false;
   let isTooltipShown = false;
@@ -90,6 +92,13 @@
   .predicted-row {
     justify-content: flex-end;
   }
+
+  .spinner-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 15rem;
+  }
 </style>
 
 <main>
@@ -124,7 +133,7 @@
 
   <StocksSelect />
 
-  {#if $candlesticksData}
+  {#if !$isSpinner}
     <div
       on:mouseenter={() => (isCrosshairShown = true)}
       on:mouseleave={() => (isCrosshairShown = false)}
@@ -151,6 +160,10 @@
           {/each}
         </div>
       </div>
+    </div>
+  {:else}
+    <div class="spinner-box">
+      <Spinner />
     </div>
   {/if}
 </main>
