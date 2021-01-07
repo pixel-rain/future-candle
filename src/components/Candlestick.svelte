@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher } from "svelte";
   import type CandlestickData from "../interfaces/CandlestickData";
-  
+
   export let item: CandlestickData;
   export let isPredicted: boolean = false;
-  
+
   const dispatch = createEventDispatcher();
   const chartSize = 10;
 
@@ -17,35 +17,13 @@
   $: date = item.date;
 
   $: percent = (datasetMax - datasetMin) / 100;
-  $: headTailSize = ((high - (close > open ? close : open)) / percent) / chartSize;
-  $: bodySize = (Math.abs(open - close) / percent) / chartSize;
-  $: bottomTailSize = (((close > open ? open : close) - low) / percent) / chartSize;
-  $: upperOffset = ((datasetMax - high) / percent) / chartSize;
+  $: headTailSize =
+    (high - (close > open ? close : open)) / percent / chartSize;
+  $: bodySize = Math.abs(open - close) / percent / chartSize;
+  $: bottomTailSize =
+    ((close > open ? open : close) - low) / percent / chartSize;
+  $: upperOffset = (datasetMax - high) / percent / chartSize;
 </script>
-
-<div
-  on:mouseover={() => dispatch('candle-data', { open, high, low, close, date })}
-  on:mouseenter
-  on:mouseleave
-  class="candle"
->
-  <div
-    class="tail"
-    class:predicted={isPredicted}
-    style={`height: ${headTailSize}rem; margin-top: ${upperOffset}rem;`}></div>
-
-  <div 
-    class="body"
-    class:body-down={(close < open) && !isPredicted}
-    class:predicted={(close < open) && isPredicted}
-    class:body-predicted={isPredicted}
-    style={`height: ${bodySize}rem;`}></div>
-
-  <div 
-    class="tail"
-    class:predicted={isPredicted}
-    style={`height: ${bottomTailSize}rem;`}></div>
-</div>
 
 <style>
   .candle {
@@ -78,3 +56,26 @@
     background-color: silver;
   }
 </style>
+
+<div
+  on:mouseover={() => dispatch('candle-data', { open, high, low, close, date })}
+  on:mouseenter
+  on:mouseleave
+  class="candle">
+  <div
+    class="tail"
+    class:predicted={isPredicted}
+    style={`height: ${headTailSize}rem; margin-top: ${upperOffset}rem;`} />
+
+  <div
+    class="body"
+    class:body-down={close < open && !isPredicted}
+    class:predicted={close < open && isPredicted}
+    class:body-predicted={isPredicted}
+    style={`height: ${bodySize}rem;`} />
+
+  <div
+    class="tail"
+    class:predicted={isPredicted}
+    style={`height: ${bottomTailSize}rem;`} />
+</div>

@@ -9,14 +9,18 @@
   let hoveredCandle: hoveredCandle;
   const mouse = { top: 0, left: 0 };
 
-  $: rawListing = $candlesticksData ? Array.from(Array($candlesticksData.rawLength).keys()) : [];
-  $: predictionsListing = $candlesticksData ? Array.from(Array($candlesticksData.predictionsLength).keys()) : [];
+  $: rawListing = $candlesticksData
+    ? Array.from(Array($candlesticksData.rawLength).keys())
+    : [];
+  $: predictionsListing = $candlesticksData
+    ? Array.from(Array($candlesticksData.predictionsLength).keys())
+    : [];
 
-  $: tooltipOpen = hoveredCandle ? hoveredCandle.open : '';
-  $: tooltipHigh = hoveredCandle ? hoveredCandle.high : '';
-  $: tooltipLow = hoveredCandle ? hoveredCandle.low : '';
-  $: tooltipClose = hoveredCandle ? hoveredCandle.close : '';
-  $: tooltipDate = hoveredCandle ? hoveredCandle.date : '';
+  $: tooltipOpen = hoveredCandle ? hoveredCandle.open : "";
+  $: tooltipHigh = hoveredCandle ? hoveredCandle.high : "";
+  $: tooltipLow = hoveredCandle ? hoveredCandle.low : "";
+  $: tooltipClose = hoveredCandle ? hoveredCandle.close : "";
+  $: tooltipDate = hoveredCandle ? hoveredCandle.date : "";
 
   function handleMousemove(event) {
     mouse.left = event.clientX;
@@ -27,86 +31,6 @@
     hoveredCandle = event.detail;
   }
 </script>
-
-<main>
-  <div
-    class="hair x-hair"
-    class:x-hair-shown={isCrosshairShown}
-    style={`top: ${mouse.top}px;`}
-  ></div>
-
-  <div
-    class="hair y-hair"
-    class:y-hair-shown={isCrosshairShown}
-    style={`left: ${mouse.left}px;`}
-  ></div>
-
-  <div
-    class="tooltip"
-    class:show-tooltip={isTooltipShown}
-    style={`top: ${mouse.top + 10}px; left: ${mouse.left + 10}px;`}
-  >
-    <div class="tooltip-title">
-      {tooltipDate}
-    </div>
-
-    open: {tooltipOpen} <br/>
-    high: {tooltipHigh} <br/>
-    low: {tooltipLow} <br/>
-    close: {tooltipClose}
-  </div>
-
-  <StocksSelect />
-  
-  {#if $candlesticksData}
-    <div
-      on:mouseenter={() => isCrosshairShown = true}
-      on:mouseleave={() => isCrosshairShown = false}
-      on:mousemove={handleMousemove}
-    >
-      <div class="candle-box">
-        <div class="candle-row raw-row">
-          {#each rawListing as i}
-            <Candlestick
-              item={{
-                open: $candlesticksData.open.raw[i],
-                close: $candlesticksData.close.raw[i],
-                high: $candlesticksData.high.raw[i],
-                low: $candlesticksData.low.raw[i],
-                datasetMax: $candlesticksData.datasetMax,
-                datasetMin: $candlesticksData.datasetMin,
-                date: $candlesticksData.rawDates[i]
-              }}
-              on:mouseenter={() => isTooltipShown = true}
-              on:mouseleave={() => isTooltipShown = false}
-              on:candle-data={handleMouseover}
-            />
-          {/each}
-        </div>
-      
-        <div class="candle-row predicted-row">
-          {#each predictionsListing as i}
-            <Candlestick
-              item={{
-                open: $candlesticksData.open.predictions[i],
-                close: $candlesticksData.close.predictions[i],
-                high: $candlesticksData.high.predictions[i],
-                low: $candlesticksData.low.predictions[i],
-                datasetMax: $candlesticksData.datasetMax,
-                datasetMin: $candlesticksData.datasetMin,
-                date: $candlesticksData.predictionDates[i]
-              }}
-              isPredicted
-              on:mouseenter={() => isTooltipShown = true}
-              on:mouseleave={() => isTooltipShown = false}
-              on:candle-data={handleMouseover}
-            />
-          {/each}
-        </div>
-      </div>
-    </div>
-  {/if}
-</main>
 
 <style>
   .hair {
@@ -167,3 +91,66 @@
     justify-content: flex-end;
   }
 </style>
+
+<main>
+  <div
+    class="hair x-hair"
+    class:x-hair-shown={isCrosshairShown}
+    style={`top: ${mouse.top}px;`} />
+
+  <div
+    class="hair y-hair"
+    class:y-hair-shown={isCrosshairShown}
+    style={`left: ${mouse.left}px;`} />
+
+  <div
+    class="tooltip"
+    class:show-tooltip={isTooltipShown}
+    style={`top: ${mouse.top + 10}px; left: ${mouse.left + 10}px;`}>
+    <div class="tooltip-title">{tooltipDate}</div>
+
+    open:
+    {tooltipOpen}
+    <br />
+    high:
+    {tooltipHigh}
+    <br />
+    low:
+    {tooltipLow}
+    <br />
+    close:
+    {tooltipClose}
+  </div>
+
+  <StocksSelect />
+
+  {#if $candlesticksData}
+    <div
+      on:mouseenter={() => (isCrosshairShown = true)}
+      on:mouseleave={() => (isCrosshairShown = false)}
+      on:mousemove={handleMousemove}>
+      <div class="candle-box">
+        <div class="candle-row raw-row">
+          {#each rawListing as i}
+            <Candlestick
+              item={{ open: $candlesticksData.open.raw[i], close: $candlesticksData.close.raw[i], high: $candlesticksData.high.raw[i], low: $candlesticksData.low.raw[i], datasetMax: $candlesticksData.datasetMax, datasetMin: $candlesticksData.datasetMin, date: $candlesticksData.rawDates[i] }}
+              on:mouseenter={() => (isTooltipShown = true)}
+              on:mouseleave={() => (isTooltipShown = false)}
+              on:candle-data={handleMouseover} />
+          {/each}
+        </div>
+
+        <div class="candle-row predicted-row">
+          {#each predictionsListing as i}
+            <Candlestick
+              item={{ open: $candlesticksData.open.predictions[i], close: $candlesticksData.close.predictions[i], high: $candlesticksData.high.predictions[i], low: $candlesticksData.low.predictions[i], datasetMax: $candlesticksData.datasetMax, datasetMin: $candlesticksData.datasetMin, date: $candlesticksData.predictionDates[i] }}
+              isPredicted
+              on:mouseenter={() => (isTooltipShown = true)}
+              on:mouseleave={() => (isTooltipShown = false)}
+              on:candle-data={handleMouseover} />
+          {/each}
+        </div>
+      </div>
+    </div>
+  {/if}
+</main>
