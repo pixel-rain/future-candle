@@ -4,6 +4,7 @@
 
   export let item: CandlestickData;
   export let isPredicted: boolean = false;
+  export let index: number;
 
   const dispatch = createEventDispatcher();
   const chartSize = 10;
@@ -58,7 +59,15 @@
 </style>
 
 <div
-  on:mouseover={() => dispatch('candle-data', { open, high, low, close, date })}
+  on:mouseover={() => dispatch('candle-data', {
+      open,
+      high,
+      low,
+      close,
+      date,
+      isPredicted,
+      index,
+    })}
   on:mouseenter
   on:mouseleave
   class="candle">

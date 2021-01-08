@@ -4,4 +4,6 @@ export default interface HoveredCandle {
   low: number;
   close: number;
   date: string;
+  isPredicted: boolean;
+  index: number;
 }

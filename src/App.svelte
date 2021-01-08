@@ -2,6 +2,7 @@
   import Candlestick from "./components/Candlestick.svelte";
   import StocksSelect from "./components/StocksSelect.svelte";
   import Spinner from "./components/Spinner.svelte";
+  import Tooltip from "./components/Tooltip.svelte";
   import type hoveredCandle from "./interfaces/HoveredCandle";
   import { candlesticksData } from "./store";
   import { isSpinner } from "./store";
@@ -9,6 +10,8 @@
   let isCrosshairShown = false;
   let isTooltipShown = false;
   let hoveredCandle: hoveredCandle;
+  let actualForPredicted: hoveredCandle;
+
   const mouse = { top: 0, left: 0 };
 
   $: rawListing = $candlesticksData
@@ -18,11 +21,20 @@
     ? Array.from(Array($candlesticksData.predictionsLength).keys())
     : [];
 
-  $: tooltipOpen = hoveredCandle ? hoveredCandle.open : "";
-  $: tooltipHigh = hoveredCandle ? hoveredCandle.high : "";
-  $: tooltipLow = hoveredCandle ? hoveredCandle.low : "";
-  $: tooltipClose = hoveredCandle ? hoveredCandle.close : "";
-  $: tooltipDate = hoveredCandle ? hoveredCandle.date : "";
+  $: if (hoveredCandle && hoveredCandle.isPredicted && hoveredCandle.index < 3) {
+    const index = hoveredCandle.index + 12;
+    actualForPredicted = {
+      open: $candlesticksData.open.raw[index],
+      high: $candlesticksData.high.raw[index],
+      low: $candlesticksData.low.raw[index],
+      close: $candlesticksData.close.raw[index],
+      date: $candlesticksData.rawDates[index],
+      isPredicted: false,
+      index,
+    };
+  } else {
+    actualForPredicted = null;
+  }
 
   function handleMousemove(event) {
     mouse.left = event.clientX;
@@ -66,10 +78,6 @@
     border: 1px solid black;
     text-align: center;
     opacity: 0;
-  }
-
-  .tooltip-title {
-    border-bottom: 1px solid black;
   }
 
   .show-tooltip {
@@ -116,19 +124,7 @@
     class="tooltip"
     class:show-tooltip={isTooltipShown}
     style={`top: ${mouse.top + 10}px; left: ${mouse.left + 10}px;`}>
-    <div class="tooltip-title">{tooltipDate}</div>
-
-    open:
-    {tooltipOpen}
-    <br />
-    high:
-    {tooltipHigh}
-    <br />
-    low:
-    {tooltipLow}
-    <br />
-    close:
-    {tooltipClose}
+    <Tooltip {hoveredCandle} {actualForPredicted} />
   </div>
 
   <StocksSelect />
@@ -143,6 +139,7 @@
           {#each rawListing as i}
             <Candlestick
               item={{ open: $candlesticksData.open.raw[i], close: $candlesticksData.close.raw[i], high: $candlesticksData.high.raw[i], low: $candlesticksData.low.raw[i], datasetMax: $candlesticksData.datasetMax, datasetMin: $candlesticksData.datasetMin, date: $candlesticksData.rawDates[i] }}
+              index={i}
               on:mouseenter={() => (isTooltipShown = true)}
               on:mouseleave={() => (isTooltipShown = false)}
               on:candle-data={handleMouseover} />
@@ -153,6 +150,7 @@
           {#each predictionsListing as i}
             <Candlestick
               item={{ open: $candlesticksData.open.predictions[i], close: $candlesticksData.close.predictions[i], high: $candlesticksData.high.predictions[i], low: $candlesticksData.low.predictions[i], datasetMax: $candlesticksData.datasetMax, datasetMin: $candlesticksData.datasetMin, date: $candlesticksData.predictionDates[i] }}
+              index={i}
               isPredicted
               on:mouseenter={() => (isTooltipShown = true)}
               on:mouseleave={() => (isTooltipShown = false)}
