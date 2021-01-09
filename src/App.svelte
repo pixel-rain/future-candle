@@ -21,7 +21,11 @@
     ? Array.from(Array($candlesticksData.predictionsLength).keys())
     : [];
 
-  $: if (hoveredCandle && hoveredCandle.isPredicted && hoveredCandle.index < 3) {
+  $: if (
+    hoveredCandle &&
+    hoveredCandle.isPredicted &&
+    hoveredCandle.index < 3
+  ) {
     const index = hoveredCandle.index + 12;
     actualForPredicted = {
       open: $candlesticksData.open.raw[index],
@@ -47,6 +51,37 @@
 </script>
 
 <style>
+  main {
+    font-family: "Roboto";
+    height: 100%;
+  }
+
+  .main-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background-color: white;
+    position: relative;
+    z-index: 2;
+    padding-bottom: 0.5rem;
+  }
+
+  .main-title {
+    text-align: center;
+    justify-self: center;
+    border-bottom: 2px solid black;
+    padding: 0 1rem 1rem;
+  }
+
+  .select-box {
+    position: absolute;
+    margin-right: 50rem;
+  }
+
+  .crosshair-box {
+    height: 100%;
+  }
+
   .hair {
     position: absolute;
     pointer-events: none;
@@ -75,6 +110,7 @@
     position: absolute;
     z-index: 1;
     padding: 1rem;
+    background-color: white;
     border: 1px solid black;
     text-align: center;
     opacity: 0;
@@ -86,7 +122,20 @@
 
   .candle-box {
     width: min-content;
-    margin: 1rem auto;
+    margin: 2.5rem auto 0;
+    position: relative;
+  }
+
+  .candle-box::before {
+    content: "Actual";
+    text-align: left;
+  }
+
+  .candle-box::after {
+    content: "Predicted";
+    text-align: right;
+    position: absolute;
+    right: 0;
   }
 
   .candle-row {
@@ -95,10 +144,12 @@
 
   .raw-row {
     padding-right: 2.4rem;
+    padding-top: 1.5rem;
   }
 
   .predicted-row {
     justify-content: flex-end;
+    padding-bottom: 1.5rem;
   }
 
   .spinner-box {
@@ -127,13 +178,24 @@
     <Tooltip {hoveredCandle} {actualForPredicted} />
   </div>
 
-  <StocksSelect />
+  <div class="main-header">
+    <div class="select-box">
+      <StocksSelect />
+    </div>
+
+    <div class="main-title">
+      <h1>The Future Candle</h1>
+
+      A simple stock market prediction with the Theil–Sen estimator
+    </div>
+  </div>
 
   {#if !$isSpinner}
     <div
       on:mouseenter={() => (isCrosshairShown = true)}
       on:mouseleave={() => (isCrosshairShown = false)}
-      on:mousemove={handleMousemove}>
+      on:mousemove={handleMousemove}
+      class="crosshair-box">
       <div class="candle-box">
         <div class="candle-row raw-row">
           {#each rawListing as i}

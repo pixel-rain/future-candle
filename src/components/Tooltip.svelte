@@ -20,6 +20,12 @@
 <style>
   .title {
     border-bottom: 1px solid black;
+    padding-bottom: 0.2rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .price-box {
+    text-align: left;
   }
 
   .predicted {
@@ -32,7 +38,13 @@
   }
 
   .subtitle {
-    padding-left: 0.5rem;
+    display: inline-block;
+    border-bottom: 1px solid black;
+    margin-bottom: 0.2rem;
+  }
+
+  .subtitle-right {
+    margin-left: 0.5rem;
   }
 
   .inner-right {
@@ -44,21 +56,23 @@
 <div class="title">{date}</div>
 
 {#if !isPredicted || date === 'Next Session'}
-  open:
-  {open}
-  <br />
-  high:
-  {high}
-  <br />
-  low:
-  {low}
-  <br />
-  close:
-  {close}
+  <div class="price-box">
+    open:
+    {open}
+    <br />
+    high:
+    {high}
+    <br />
+    low:
+    {low}
+    <br />
+    close:
+    {close}
+  </div>
 {:else}
   <div class="predicted">
     <div class="predicted-left">
-      Predicted
+      <span class="subtitle">Predicted</span>
       <div>
         open:
         {open}
@@ -75,7 +89,7 @@
     </div>
 
     <div>
-      <span class="subtitle">Actual</span>
+      <span class="subtitle subtitle-right">Actual</span>
       <div class="inner-right">
         open:
         {actualOpen}
