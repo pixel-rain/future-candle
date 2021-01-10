@@ -37,24 +37,24 @@
 
   .tail {
     width: 2px;
-    background-color: black;
+    background-color: #EA00D9;
   }
 
   .body {
     width: 1.5rem;
-    border: 2px solid black;
+    border: 2px solid #EA00D9;
   }
 
   .body-predicted {
-    border: 2px solid silver;
+    border: 2px solid #F887FF;
   }
 
   .body-down {
-    background-color: black;
+    background-color: #EA00D9;
   }
 
   .predicted {
-    background-color: silver;
+    background-color: #F887FF;
   }
 </style>
 

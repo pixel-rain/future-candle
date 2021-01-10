@@ -60,7 +60,7 @@
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    background-color: white;
+    background-color: #121212;
     position: relative;
     z-index: 2;
     padding-bottom: 0.5rem;
@@ -69,7 +69,7 @@
   .main-title {
     text-align: center;
     justify-self: center;
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid #65DC98;
     padding: 0 1rem 1rem;
   }
 
@@ -94,7 +94,7 @@
   }
 
   .x-hair-shown {
-    border-top: 1px solid black;
+    border-top: 1px solid #65DC98;
   }
 
   .y-hair {
@@ -103,15 +103,15 @@
   }
 
   .y-hair-shown {
-    border-left: 1px solid black;
+    border-left: 1px solid #65DC98;
   }
 
   .tooltip {
     position: absolute;
     z-index: 1;
     padding: 1rem;
-    background-color: white;
-    border: 1px solid black;
+    background-color: #121212;
+    border: 1px solid #65DC98;
     text-align: center;
     opacity: 0;
   }

@@ -13,6 +13,17 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   overflow: hidden;
+  background-color: #121212;
+  color: #b7c1de;
+}
+
+select {
+  color: #b7c1de;
+  background-color: #121212;
+}
+
+select:focus, select:active {
+  outline: none;
 }
 
 a {
@@ -42,7 +53,7 @@ textarea {
   padding: 0.4em;
   margin: 0 0 0.5em 0;
   box-sizing: border-box;
-  border: 1px solid #ccc;
+  border: 1px solid #65dc98;
   border-radius: 2px;
 }
 

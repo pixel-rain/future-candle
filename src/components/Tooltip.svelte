@@ -19,7 +19,7 @@
 
 <style>
   .title {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #65DC98;
     padding-bottom: 0.2rem;
     margin-bottom: 0.4rem;
   }
@@ -39,7 +39,7 @@
 
   .subtitle {
     display: inline-block;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #65DC98;
     margin-bottom: 0.2rem;
   }
 
@@ -49,7 +49,7 @@
 
   .inner-right {
     padding-left: 0.5rem;
-    border-left: 1px solid black;
+    border-left: 1px solid #65DC98;
   }
 </style>
 
