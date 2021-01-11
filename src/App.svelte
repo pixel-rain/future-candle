@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { onDestroy } from "svelte";
   import Candlestick from "./components/Candlestick.svelte";
   import StocksSelect from "./components/StocksSelect.svelte";
   import Spinner from "./components/Spinner.svelte";
@@ -7,6 +9,8 @@
   import { candlesticksData } from "./store";
   import { isSpinner } from "./store";
 
+  let screenSize = { clientWidth: 0 };
+  let candlesNotShown = 0;
   let isCrosshairShown = false;
   let isTooltipShown = false;
   let hoveredCandle: hoveredCandle;
@@ -14,8 +18,27 @@
 
   const mouse = { top: 0, left: 0 };
 
+  onMount(() => {
+    setScreenSize();
+    window.addEventListener("orientationchange", hideCrosshairAndTooltip);
+  });
+
+  onDestroy(() => {
+    window.removeEventListener("orientationchange", hideCrosshairAndTooltip);
+  });
+
+  $: if ($candlesticksData && screenSize.clientWidth < 490) {
+    candlesNotShown = $candlesticksData.rawLength - 7;
+  } else if ($candlesticksData && screenSize.clientWidth < 640) {
+    candlesNotShown = $candlesticksData.rawLength - 11;
+  } else {
+    candlesNotShown = 0;
+  }
+
   $: rawListing = $candlesticksData
-    ? Array.from(Array($candlesticksData.rawLength).keys())
+    ? Array.from(
+        Array($candlesticksData.rawLength - candlesNotShown).keys()
+      ).map((val) => val + candlesNotShown)
     : [];
   $: predictionsListing = $candlesticksData
     ? Array.from(Array($candlesticksData.predictionsLength).keys())
@@ -41,12 +64,27 @@
   }
 
   function handleMousemove(event) {
-    mouse.left = event.clientX;
-    mouse.top = event.clientY;
+    if (!isCrosshairShown) {
+      isCrosshairShown = true;
+    }
+
+    mouse.left = event.pageX;
+    mouse.top = event.pageY;
   }
 
   function handleMouseover(event) {
     hoveredCandle = event.detail;
+  }
+
+  function setScreenSize() {
+    screenSize = {
+      clientWidth: document.body.clientWidth,
+    };
+  }
+
+  function hideCrosshairAndTooltip() {
+    mouse.top = -1;
+    mouse.left = -1;
   }
 </script>
 
@@ -69,13 +107,29 @@
   .main-title {
     text-align: center;
     justify-self: center;
-    border-bottom: 2px solid #65DC98;
+    border-bottom: 2px solid #65dc98;
     padding: 0 1rem 1rem;
   }
 
   .select-box {
     position: absolute;
     margin-right: 50rem;
+  }
+
+  @media all and (max-width: 1060px) {
+    .main-title {
+      padding-bottom: 4rem;
+    }
+
+    .select-box {
+      margin-right: 14rem;
+    }
+  }
+
+  @media all and (max-width: 490px) {
+    .select-box {
+      margin-right: 0;
+    }
   }
 
   .crosshair-box {
@@ -89,12 +143,12 @@
   }
 
   .x-hair {
-    width: 100%;
     height: 1px;
+    width: 100%;
   }
 
   .x-hair-shown {
-    border-top: 1px solid #65DC98;
+    border-top: 1px solid #65dc98;
   }
 
   .y-hair {
@@ -103,21 +157,27 @@
   }
 
   .y-hair-shown {
-    border-left: 1px solid #65DC98;
+    border-left: 1px solid #65dc98;
   }
 
   .tooltip {
     position: absolute;
     z-index: 1;
-    padding: 1rem;
+    padding-right: 10px;
+    padding-bottom: 10px;
     background-color: #121212;
-    border: 1px solid #65DC98;
     text-align: center;
     opacity: 0;
+    width: max-content;
   }
 
   .show-tooltip {
     opacity: 1;
+  }
+
+  .tooltip-inner {
+    padding: 1rem;
+    border: 1px solid #65dc98;
   }
 
   .candle-box {
@@ -160,6 +220,8 @@
   }
 </style>
 
+<svelte:window on:resize={setScreenSize} />
+
 <main>
   <div
     class="hair x-hair"
@@ -175,7 +237,9 @@
     class="tooltip"
     class:show-tooltip={isTooltipShown}
     style={`top: ${mouse.top + 10}px; left: ${mouse.left + 10}px;`}>
-    <Tooltip {hoveredCandle} {actualForPredicted} />
+    <div class="tooltip-inner">
+      <Tooltip {hoveredCandle} {actualForPredicted} />
+    </div>
   </div>
 
   <div class="main-header">
