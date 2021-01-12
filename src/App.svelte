@@ -8,6 +8,8 @@
   import type hoveredCandle from "./interfaces/HoveredCandle";
   import { candlesticksData } from "./store";
   import { isSpinner } from "./store";
+  import MAX_CANDLES_NUMBER from "./utility/MAX_CANDLES_NUMBER";
+  import PREDICTED_CANDLES_NUMBER from "./utility/PREDICTED_CANDLES_NUMBER";
 
   let screenSize = { clientWidth: 0 };
   let candlesNotShown = 0;
@@ -27,22 +29,21 @@
     window.removeEventListener("orientationchange", hideCrosshairAndTooltip);
   });
 
-  $: if ($candlesticksData && screenSize.clientWidth < 490) {
-    candlesNotShown = $candlesticksData.rawLength - 7;
-  } else if ($candlesticksData && screenSize.clientWidth < 640) {
-    candlesNotShown = $candlesticksData.rawLength - 11;
+  $: if (screenSize.clientWidth < 490) {
+    candlesNotShown = MAX_CANDLES_NUMBER - 7;
+  } else if (screenSize.clientWidth < 640) {
+    candlesNotShown = MAX_CANDLES_NUMBER - 11;
   } else {
     candlesNotShown = 0;
   }
 
-  $: rawListing = $candlesticksData
-    ? Array.from(
-        Array($candlesticksData.rawLength - candlesNotShown).keys()
-      ).map((val) => val + candlesNotShown)
-    : [];
-  $: predictionsListing = $candlesticksData
-    ? Array.from(Array($candlesticksData.predictionsLength).keys())
-    : [];
+  $: rawListing = Array.from(
+    Array(MAX_CANDLES_NUMBER - candlesNotShown).keys()
+  ).map((val) => val + candlesNotShown);
+
+  $: predictionsListing = Array.from(
+    Array(PREDICTED_CANDLES_NUMBER).keys()
+  );
 
   $: if (
     hoveredCandle &&
@@ -63,7 +64,7 @@
     actualForPredicted = null;
   }
 
-  function handleMousemove(event) {
+  function handleMousemove(event: { pageX: number; pageY: number }) {
     if (!isCrosshairShown) {
       isCrosshairShown = true;
     }
@@ -72,7 +73,7 @@
     mouse.top = event.pageY;
   }
 
-  function handleMouseover(event) {
+  function handleMouseover(event: { detail: hoveredCandle }) {
     hoveredCandle = event.detail;
   }
 

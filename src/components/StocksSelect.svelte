@@ -28,9 +28,9 @@
     { ticker: "YNDX", title: "Yandex (YNDX)" },
   ];
 
-  let selected;
+  let selected: { ticker: string; title: string };
 
-  async function setData(ticker) {
+  async function setData(ticker: string) {
     isSpinner.set(true);
     const data = await getDataset(ticker);
     candlesticksData.set(data);

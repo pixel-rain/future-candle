@@ -1,0 +1,3 @@
+const MAX_CANDLES_NUMBER = 15;
+
+export default MAX_CANDLES_NUMBER;
